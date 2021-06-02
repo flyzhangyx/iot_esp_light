@@ -145,7 +145,7 @@ void threadExeMSG()
     }
     break;
     case 1:
-      Serialsend('1', outStr[2]);
+      Serialsend('1', outStr[1]);
       break;
     default:
       Serialsend(atoi(outStr[0])+'0', outStr[1]);
@@ -385,6 +385,7 @@ void PeriodTask()
   timer++;
   if (timer % 3000 == 0)
   {
+    Send4Server_IO2_status();
     GetIotCmd(0); //switch
   }
   if (timer % 4000 == 0)
@@ -393,12 +394,13 @@ void PeriodTask()
   }
   if (timer % 5000 == 0)
   {
-    Send4Server_IO2_status();
     if (ErrCnt > 10)
     {
-      Connect2Server();
+      resetValue();
+      if(Connect2Server())
+        InitRsaAndPin();
     }
-    if (ErrCnt > 13)
+    if (ErrCnt > 100)
     {
       ESP.restart();
     }
